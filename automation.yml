@@ -1,0 +1,32 @@
+name: 24/7 Job Scout Automation
+
+on:
+  schedule:
+    # Runs every hour
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install firebase-admin requests
+
+      - name: Run Job Scout Script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          # The script expects serviceAccountKey.json
+          # You should store the JSON content in a GitHub Secret named FIREBASE_SERVICE_ACCOUNT
+          echo $FIREBASE_SERVICE_ACCOUNT > serviceAccountKey.json
+          python artifacts/mobile/utils/fetch_jobs.py
