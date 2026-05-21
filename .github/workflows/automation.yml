@@ -1,28 +1,32 @@
-name: 24x7 Automatic Job Scout Engine
+name: 24/7 Job Scout Automation
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Har 1 ghante mein automatic chalega
-  workflow_dispatch:      # Isse aap jab chahein manually ek click mein chala sakte hain
+    - cron: '0 * * * *'  # Har ghante khud-ba-khud chalega
+  workflow_dispatch:      # Manual trigger karne ke liye button
 
 jobs:
-  run-scout:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Install Dependencies
-      run: |
-        pip install firebase-admin requests
+      - name: Install dependencies
+        run: |
+          pip install firebase-admin requests
 
-    - name: Run Job Scout Script
-      env:
-        FIREBASE_SECRET_KEY: ${{ secrets.FIREBASE_SECRET_KEY }}
-        FIREBASE_DB_URL: "https://job-india-55dd2-default-rtdb.firebaseio.com/" # <-- Apna Realtime DB URL yahan likhein
-      run: python fetch_jobs.py
+      - name: Run Job Scout Script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          # GitHub Secret se secure json file banana
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > serviceAccountKey.json
+          
+          # 🔥 FIX: Ab robot seedhe bahar rakhi hui file ko run karega
+          python fetch_jobs.py
