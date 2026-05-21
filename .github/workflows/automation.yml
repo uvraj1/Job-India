@@ -2,8 +2,8 @@ name: 24/7 Job Scout Automation
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
-  workflow_dispatch:      # Manual trigger
+    - cron: '0 * * * *'  # Har ghante khud-ba-khud chalega
+  workflow_dispatch:      # Manual trigger karne ke liye button
 
 jobs:
   build:
@@ -25,5 +25,8 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
+          # GitHub Secret se secure json file banana
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > serviceAccountKey.json
-          python artifacts/mobile/utils/automated_scout.py
+          
+          # 🔥 FIX: Ab robot seedhe bahar rakhi hui file ko run karega
+          python fetch_jobs.py
